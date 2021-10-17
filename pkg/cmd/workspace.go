@@ -23,10 +23,11 @@ func NewWorkspaceCommand(c *conf.Conf) *cobra.Command {
 		Use: "workspace",
 	}
 
-	workspaceCmd.AddCommand(newWorkspaceListCommand(c))
-	workspaceCmd.AddCommand(newWorkspaceCreateCommand(c))
-	workspaceCmd.AddCommand(newWorkspaceViewCommand(c))
-
+	workspaceCmd.AddCommand(
+		newWorkspaceListCommand(c),
+		newWorkspaceCreateCommand(c),
+		newWorkspaceViewCommand(c),
+	)
 	return workspaceCmd
 }
 

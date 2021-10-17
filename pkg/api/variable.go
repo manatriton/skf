@@ -19,10 +19,10 @@ type Variables struct {
 }
 
 type CreateWorkspaceVariableInput struct {
-	WorkspaceID graphql.String
-	Key         graphql.String
-	Value       graphql.String
-	Sensitive   graphql.Boolean
+	WorkspaceID graphql.String  `json:"workspaceId"`
+	Key         graphql.String  `json:"key"`
+	Value       graphql.String  `json:"value"`
+	Sensitive   graphql.Boolean `json:"sensitive"`
 }
 
 type UpdateVariableInput struct {
@@ -65,7 +65,7 @@ func (vs *Variables) Create(workspaceId, key, value string, sensitive bool) (*Va
 	var m struct {
 		CreateWorkspaceVariable struct {
 			WorkspaceVariable *Variable
-		} `graphql:"createWorkspace(input: $input)"`
+		} `graphql:"createWorkspaceVariable(input: $input)"`
 	}
 
 	if err := vs.client.Mutate(context.Background(), &m, variables); err != nil {

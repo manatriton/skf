@@ -1,4 +1,4 @@
-module skf
+module github.com/manatriton/skf
 
 go 1.17
 

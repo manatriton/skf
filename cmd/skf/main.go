@@ -30,8 +30,11 @@ func main() {
 	}
 
 	root.PersistentFlags().StringVarP(&c.Token, "token", "t", "", "API token to authenticate with")
-	root.AddCommand(cmd.NewWorkspaceCommand(c))
-	root.AddCommand(cmd.NewVariableCommand(c))
+	root.AddCommand(
+		cmd.NewWorkspaceCommand(c),
+		cmd.NewVariableCommand(c),
+		cmd.NewRunCommand(c),
+	)
 
 	root.PersistentPreRunE = func(cmd *cobra.Command, args []string) error {
 		initializeConf(c)
