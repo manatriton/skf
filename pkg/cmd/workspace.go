@@ -2,11 +2,11 @@ package cmd
 
 import (
 	"fmt"
-	"skf/pkg/conf"
-	"skf/pkg/theme"
 
 	"github.com/AlecAivazis/survey/v2"
 	"github.com/fatih/color"
+	"github.com/manatriton/skf/pkg/conf"
+	"github.com/manatriton/skf/pkg/theme"
 	"github.com/spf13/cobra"
 )
 

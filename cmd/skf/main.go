@@ -3,10 +3,10 @@ package main
 import (
 	"errors"
 	"os"
-	"skf/pkg/api"
-	"skf/pkg/cmd"
-	"skf/pkg/conf"
 
+	"github.com/manatriton/skf/pkg/api"
+	"github.com/manatriton/skf/pkg/cmd"
+	"github.com/manatriton/skf/pkg/conf"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )

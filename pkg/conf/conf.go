@@ -1,6 +1,6 @@
 package conf
 
-import "skf/pkg/api"
+import "github.com/manatriton/skf/pkg/api"
 
 type Conf struct {
 	API   *api.API

@@ -2,9 +2,10 @@ package cmd
 
 import (
 	"fmt"
-	"skf/pkg/api"
-	"skf/pkg/conf"
-	"skf/pkg/theme"
+
+	"github.com/manatriton/skf/pkg/api"
+	"github.com/manatriton/skf/pkg/conf"
+	"github.com/manatriton/skf/pkg/theme"
 
 	"github.com/spf13/cobra"
 )
