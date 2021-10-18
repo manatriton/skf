@@ -3,10 +3,11 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/AlecAivazis/survey/v2"
+
 	"github.com/manatriton/skf/pkg/api"
 	"github.com/manatriton/skf/pkg/conf"
 	"github.com/manatriton/skf/pkg/theme"
-
 	"github.com/spf13/cobra"
 )
 
@@ -17,8 +18,22 @@ func NewRunCommand(c *conf.Conf) *cobra.Command {
 
 	runCmd.AddCommand(
 		newRunPlanOutputCommand(c),
+		newRunViewCommand(c),
 	)
 	return runCmd
+}
+
+func newRunViewCommand(c *conf.Conf) *cobra.Command {
+	var id string
+	runViewCmd := &cobra.Command{
+		Use: "view",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return runView(c, id)
+		},
+	}
+
+	runViewCmd.Flags().StringVar(&id, "id", "", "id of the run")
+	return runViewCmd
 }
 
 func newRunPlanOutputCommand(c *conf.Conf) *cobra.Command {
@@ -35,7 +50,18 @@ func newRunPlanOutputCommand(c *conf.Conf) *cobra.Command {
 }
 
 func runPlanOutput(c *conf.Conf, id string) error {
-	value, err := c.API.Runs.GetPlanOutput(id)
+	if id == "" {
+		fmt.Printf("More information is needed to search for a workspace!\n\n")
+		prompt := &survey.Input{
+			Message: "Run id",
+		}
+		if err := survey.AskOne(prompt, &id); err != nil {
+			return err
+		}
+		fmt.Println()
+	}
+
+	value, err := c.API.Runs.GetPlanOutputById(id)
 	if err == api.ErrNotExist {
 		fmt.Printf("Run %s does not exist!\n", id)
 		return nil
@@ -50,5 +76,33 @@ func runPlanOutput(c *conf.Conf, id string) error {
 	theme.Title.Printf("Plan output for run %s\n\n", id)
 	fmt.Print(value)
 	fmt.Println()
+	return nil
+}
+
+func runView(c *conf.Conf, id string) error {
+	if id == "" {
+		fmt.Printf("More information is needed to search for a workspace!\n\n")
+		prompt := &survey.Input{
+			Message: "Run id",
+		}
+		if err := survey.AskOne(prompt, &id); err != nil {
+			return err
+		}
+		fmt.Println()
+	}
+
+	run, err := c.API.Runs.GetById(id)
+	if err != nil {
+		return err
+	}
+
+	if run == nil {
+		fmt.Println("Run not found!")
+		return nil
+	}
+
+	fmt.Printf("%s\n", run.ID)
+	fmt.Printf("status: %s\n", run.Status)
+	fmt.Printf("created at: %s\n", run.CreatedAt)
 	return nil
 }

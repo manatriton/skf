@@ -7,17 +7,43 @@ import (
 )
 
 type Run struct {
+	ID        graphql.String
+	Status    graphql.String
+	CreatedAt graphql.String
 }
 
 type Runs struct {
 	client *graphql.Client
 }
 
-func (rs *Runs) GetPlanOutput(id string) (string, error) {
+func (rs *Runs) GetById(id string) (*Run, error) {
+	variables := map[string]interface{}{
+		"id": id,
+	}
+
 	var q struct {
 		Node *struct {
 			ID  graphql.String
+			Run Run `graphql:"... on Run"`
+		} `graphql:"node(id: $id)"`
+	}
+
+	if err := rs.client.Query(context.Background(), &q, variables); err != nil {
+		return nil, err
+	}
+
+	if q.Node == nil || q.Node.Run.Status == "" {
+		return nil, nil
+	}
+
+	return &q.Node.Run, nil
+}
+
+func (rs *Runs) GetPlanOutputById(id string) (string, error) {
+	var q struct {
+		Node *struct {
 			Run struct {
+				Status     string
 				PlanOutput string
 			} `graphql:"... on Run"`
 		} `graphql:"node(id: $id)"`
@@ -31,7 +57,7 @@ func (rs *Runs) GetPlanOutput(id string) (string, error) {
 		return "", err
 	}
 
-	if q.Node == nil {
+	if q.Node == nil || q.Node.Run.Status == "" {
 		return "", ErrNotExist
 	}
 
