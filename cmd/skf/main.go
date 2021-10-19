@@ -52,10 +52,10 @@ func main() {
 }
 
 func initializeConf(c *conf.Conf) {
-	c.API = api.NewAPI(c.URL)
-
 	token := os.Getenv("SKF_TOKEN")
 	if token != "" {
 		c.Token = token
 	}
+
+	c.API = api.NewAPI(c.URL, c.Token)
 }

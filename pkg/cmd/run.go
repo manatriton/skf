@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/AlecAivazis/survey/v2"
-
 	"github.com/manatriton/skf/pkg/api"
 	"github.com/manatriton/skf/pkg/conf"
 	"github.com/manatriton/skf/pkg/theme"
@@ -19,8 +18,22 @@ func NewRunCommand(c *conf.Conf) *cobra.Command {
 	runCmd.AddCommand(
 		newRunPlanOutputCommand(c),
 		newRunViewCommand(c),
+		newRunListCommand(c),
 	)
 	return runCmd
+}
+
+func newRunListCommand(c *conf.Conf) *cobra.Command {
+	var workspaceId string
+	runListCmd := &cobra.Command{
+		Use: "list",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return runList(c, workspaceId)
+		},
+	}
+
+	runListCmd.Flags().StringVar(&workspaceId, "id", "", "id of the run")
+	return runListCmd
 }
 
 func newRunViewCommand(c *conf.Conf) *cobra.Command {
@@ -104,5 +117,20 @@ func runView(c *conf.Conf, id string) error {
 	fmt.Printf("%s\n", run.ID)
 	fmt.Printf("status: %s\n", run.Status)
 	fmt.Printf("created at: %s\n", run.CreatedAt)
+	return nil
+}
+
+func runList(c *conf.Conf, workspaceId string) error {
+	if workspaceId == "" {
+		fmt.Printf("More information is needed to search for runs!\n\n")
+		prompt := &survey.Input{
+			Message: "Workspace id",
+		}
+		if err := survey.AskOne(prompt, &workspaceId); err != nil {
+			return err
+		}
+		fmt.Println()
+	}
+
 	return nil
 }
